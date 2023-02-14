@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
 	char message[] = "Hello World!";
 
-	if (argc != 2) {
+	if (argc != 2) { //얜 포트만 입력받음
 		printf("Usage:%s <port>\n", argv[0]);
 		exit(1);
 	}
@@ -56,17 +56,20 @@ int main(int argc, char *argv[]) {
 	if (client_sock == -1)
 		error_handling("accept() error");
 
-	// write 함수는 데이터를 전송하는 기능의 함수인데, 이 문장이 실행됬다는 것은 연결요청이 있었다는 뜻
-	write(client_sock, message, sizeof(message));
-
 	// 클라이언트로부터 데이터를 읽고, 데이터 내용과 길이를 저장함
-	message[0] = '\0';
-	int str_len = read(client_sock, message, sizeof(message) - 1);
+	char data[30]; //문자열의 맨 앞글자에 널문자를 넣으면 다 비울 수 있음
+	int str_len = read(client_sock, data, sizeof(data) - 1);
 	if (str_len == -1)
 		error_handling("read() error");
 
 	// 메시지를 출력함
-	printf("Message from client:%s\n", message);
+	printf("클라이언트가 이거 줬어요:%s\n", data);
+
+	// write 함수는 데이터를 전송하는 기능의 함수인데, 이 문장이 실행됬다는 것은 연결요청이 있었다는 뜻
+	data[0] = 'Z';
+	data[1] = 'H';
+	data[2] = 'Q';
+	write(client_sock, data, sizeof(data));
 
 	// 소켓 닫음
 	close(client_sock);
